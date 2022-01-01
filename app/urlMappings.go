@@ -1,13 +1,14 @@
 package app
 
 import (
-	"github.com/adrielbustos/users-book-ms/controllers"
+	"github.com/adrielbustos/users-book-ms/controllers/ping"
+	"github.com/adrielbustos/users-book-ms/controllers/users"
 )
 
 func MapUrls() {
-	router.GET("/ping", controllers.Ping)
+	router.GET("/ping", ping.Ping)
 
-	router.POST("/users", controllers.CreateUser)
-	router.GET("/users/:userId", controllers.GetUser)
-	// router.GET("/users/search", controllers.SearchUser)
+	router.POST("/users", users.CreateUser)
+	router.GET("/users/:userId", users.GetUser)
+	// router.GET("/users/search", users.SearchUser)
 }
