@@ -12,6 +12,7 @@ import (
 
 const (
 	queryInsertUsers = "INSERT INTO users (first_name, last_name, email, date_created) VALUES (?,?,?,?)"
+	queryUpdateUsers = "UPDATE users SET first_name = ?, last_name = ?, email = ? WHERE id = ?;"
 	queryGetUser     = "SELECT * FROM users"
 )
 
@@ -50,5 +51,18 @@ func (user *User) Save() *restErrors.RestErr {
 		return restErrors.NewInternalServerError(fmt.Sprintf("erro to trying to get las insert ID: %s", err.Error()))
 	}
 	user.Id = userId
+	return nil
+}
+
+func (user *User) Update() *restErrors.RestErr {
+	stmt, err := usersdb.Client.Prepare(queryUpdateUsers)
+	if err != nil {
+		return restErrors.NewInternalServerError(err.Error())
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(user.FirstName, user.LastName, user.Email, user.Id)
+	if err != nil {
+		return mysqlutils.ParseError(err)
+	}
 	return nil
 }
