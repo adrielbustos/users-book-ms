@@ -2,6 +2,7 @@ package services
 
 import (
 	"github.com/adrielbustos/users-book-ms/domain/users"
+	datesutils "github.com/adrielbustos/users-book-ms/utils/datesUtils"
 	"github.com/adrielbustos/users-book-ms/utils/restErrors"
 )
 
@@ -9,6 +10,8 @@ func CreateUser(user users.User) (*users.User, *restErrors.RestErr) {
 	if err := user.Validate(); err != nil {
 		return nil, err
 	}
+	user.Status = users.StatusActive
+	user.DateCreated = datesutils.GetDbFormat()
 	if err := user.Save(); err != nil {
 		return nil, err
 	}
@@ -60,4 +63,9 @@ func DeleteUser(ui int64) *restErrors.RestErr {
 		Id: ui,
 	}
 	return user.Delete()
+}
+
+func Search(status string) ([]users.User, *restErrors.RestErr) {
+	dao := &users.User{}
+	return dao.FindByStatus(status)
 }
