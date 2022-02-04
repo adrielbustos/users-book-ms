@@ -14,6 +14,7 @@ const (
 	queryInsertUsers = "INSERT INTO users (first_name, last_name, email, date_created) VALUES (?,?,?,?)"
 	queryUpdateUsers = "UPDATE users SET first_name = ?, last_name = ?, email = ? WHERE id = ?;"
 	queryGetUser     = "SELECT * FROM users"
+	queryDeleteUser  = "DELETE FROM users WHERE id = ?"
 )
 
 func (user *User) Get() *restErrors.RestErr {
@@ -64,5 +65,18 @@ func (user *User) Update() *restErrors.RestErr {
 	if err != nil {
 		return mysqlutils.ParseError(err)
 	}
+	return nil
+}
+
+func (user *User) Delete() *restErrors.RestErr {
+	stmt, err := usersdb.Client.Prepare(queryDeleteUser)
+	if err != nil {
+		return restErrors.NewInternalServerError(err.Error())
+	}
+	_, err = stmt.Exec(user.Id)
+	if err != nil {
+		return mysqlutils.ParseError(err)
+	}
+	defer stmt.Close()
 	return nil
 }
