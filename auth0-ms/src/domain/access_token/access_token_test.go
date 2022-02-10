@@ -1,7 +1,11 @@
-package accesstoken
+package access_token
 
 import (
 	"testing"
+)
+
+const (
+	exprirationTime = 24
 )
 
 func TestGetNewAccessToken(t *testing.T) {
@@ -14,5 +18,16 @@ func TestGetNewAccessToken(t *testing.T) {
 	}
 	if at.UserId != 0 {
 		t.Error("new access should not have an associated user id")
+	}
+}
+
+func TestAccessTokenIsExpired(t *testing.T) {
+	at := AccessToken{}
+	if !at.IsExpired() {
+		t.Error("empty access token should be expired by default")
+	}
+	at.Expires = time.Now().UTC().Add(3 * time.Hour).Unix()
+	if at.IsExpired() {
+		t.Error("empty access token expired in 3 hous")
 	}
 }
