@@ -14,5 +14,9 @@ func NewRepository() DbRepository {
 }
 
 func (r *dbRepository) GetById(id string) (*AccessToken, *restErrors.RestErr) {
+	session, err := cassandra.GetSession()
+	if err != nil {
+		panic(err)
+	}
 	return nil, &restErrors.NewInternalServerError("not implemented")
 }
